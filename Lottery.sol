@@ -20,7 +20,17 @@ contract Lottery {
         return address(this).balance;
     }
 
-    function random() public view returns(uint){
+    function random() private view returns(uint){
        return uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, participants.length)));
+    }
+
+    function selectWinner() public view returns(address){
+        require(msg.sender ==  manager);
+        require(participants.length >= 3);
+        uint randomValue = random();
+        uint index = randomValue % participants.length; // it will always return a lower value than participants length
+        address payable winner;
+        winner = participants[index];
+        return winner;
     }
 }
