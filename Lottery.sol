@@ -24,13 +24,14 @@ contract Lottery {
        return uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, participants.length)));
     }
 
-    function selectWinner() public view returns(address){
+    function selectWinner() public{
         require(msg.sender ==  manager);
         require(participants.length >= 3);
         uint randomValue = random();
-        uint index = randomValue % participants.length; // it will always return a lower value than participants length
+        uint index = randomValue % participants.length; // it will always return a value lower than participants length
         address payable winner;
         winner = participants[index];
-        return winner;
+        winner.transfer(getBalance());
+        participants = new address payable[](0);
     }
 }
